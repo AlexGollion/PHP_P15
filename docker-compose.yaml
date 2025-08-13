@@ -1,0 +1,29 @@
+services:
+  php:
+    container_name: php_P15
+    build:
+      context: ./
+    ports:
+      - 8080:80
+    volumes:
+      - ./Default.conf:/etc/apache2/sites-enabled/000-default.conf:ro
+      - ./php.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+      - ./:/var/www
+    depends_on:
+      - database
+  database:
+    image: postgres
+    restart: always
+    container_name: postgres_P15
+    shm_size: 128mb
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
+      POSTGRES_DB: inazaoui
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_db:/var/lib/postgresql/data
+volumes:
+  postgres_db:
+    driver: local
