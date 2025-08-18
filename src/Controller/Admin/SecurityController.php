@@ -11,6 +11,7 @@ class SecurityController extends AbstractController
     /**
      * @Route("/login", name="admin_login")
      */
+    #[Route('/login', name: 'admin_login')]
     public function login(AuthenticationUtils $authenticationUtils)
     {
         $error = $authenticationUtils->getLastAuthenticationError();

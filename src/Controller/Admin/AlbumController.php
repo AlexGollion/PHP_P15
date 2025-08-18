@@ -9,15 +9,22 @@ use App\Form\MediaType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\AlbumRepository;
 
 class AlbumController extends AbstractController
 {
+
+    public function __construct(private AlbumRepository $albumRepository, private EntityManagerInterface $entityManager){        
+    }
+
     /**
      * @Route("/admin/album", name="admin_album_index")
      */
+    #[Route('/admin/album', name: 'admin_album_index')]
     public function index()
     {
-        $albums = $this->getDoctrine()->getRepository(Album::class)->findAll();
+        $albums = $this->albumRepository->findAll();
 
         return $this->render('admin/album/index.html.twig', ['albums' => $albums]);
     }
@@ -25,6 +32,7 @@ class AlbumController extends AbstractController
     /**
      * @Route("/admin/album/add", name="admin_album_add")
      */
+    #[Route('/admin/album/add', name: 'admin_album_add')]
     public function add(Request $request)
     {
         $album = new Album();
@@ -32,8 +40,8 @@ class AlbumController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->persist($album);
-            $this->getDoctrine()->getManager()->flush();
+            $this->entityManager->persist($album);
+            $this->entityManager->flush();
 
             return $this->redirectToRoute('admin_album_index');
         }
@@ -44,14 +52,15 @@ class AlbumController extends AbstractController
     /**
      * @Route("/admin/album/update/{id}", name="admin_album_update")
      */
+    #[Route('/admin/album/update/{id}', name: 'admin_album_update')]
     public function update(Request $request, int $id)
     {
-        $album = $this->getDoctrine()->getRepository(Album::class)->find($id);
+        $album = $this->albumRepository->find($id);
         $form = $this->createForm(AlbumType::class, $album);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $this->entityManager->flush();
 
             return $this->redirectToRoute('admin_album_index');
         }
@@ -62,11 +71,12 @@ class AlbumController extends AbstractController
     /**
      * @Route("/admin/album/delete/{id}", name="admin_album_delete")
      */
+    #[Route('/admin/album/delete/{id}', name: 'admin_album_delete')]
     public function delete(int $id)
     {
-        $media = $this->getDoctrine()->getRepository(Album::class)->find($id);
-        $this->getDoctrine()->getManager()->remove($media);
-        $this->getDoctrine()->getManager()->flush();
+        $media = $this->albumRepository->find($id);
+        $this->entityManager->remove($media);
+        $this->entityManager->flush();
 
         return $this->redirectToRoute('admin_album_index');
     }
