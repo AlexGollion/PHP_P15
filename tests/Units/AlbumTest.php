@@ -1,0 +1,20 @@
+<?php 
+
+namespace  App\Tests\Units;
+
+use App\Entity\Album;
+use PHPUnit\Framework\TestCase;
+
+class AlbumTest extends TestCase
+{
+    public function testAlbum()
+    {
+        $dataAlbum = [
+            'name' => 'test'
+        ];
+
+        $album = new Album();
+        $album->setName($dataAlbum['name']);
+        $this->assertEquals($dataAlbum['name'], $album->getName());
+    }
+}
