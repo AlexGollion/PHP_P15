@@ -5,13 +5,10 @@ security:
   # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
   providers:
     app_user_provider:
-      memory:
-        users:
-          ina:
-            {
-              password: "$2y$13$7JS0ehfU8vZhB3Q8o1sPGuoQxkiPGXRGgrAizmNfI5Sgy.Dqt9xoW",
-              roles: ["ROLE_ADMIN"],
-            }
+      users:
+        entity:
+          class: App\Entity\User
+          property: name
   firewalls:
     dev:
       pattern: ^/(_(profiler|wdt)|css|images|js)/
