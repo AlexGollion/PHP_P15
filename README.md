@@ -22,3 +22,9 @@ Executer cette commande pour pouvoir utiliser les commandes de symfony et compos
 ```bash
 docker-compose exec php /bin/bash
 ```
+
+Commande pour executer les tests
+
+```bash
+vendor/bin/phpunit
+```

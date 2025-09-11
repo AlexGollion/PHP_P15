@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Units;
+namespace App\tests\units;
 
 use App\Entity\Media;
 use App\Entity\User;

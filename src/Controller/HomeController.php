@@ -18,18 +18,12 @@ class HomeController extends AbstractController
     private MediaRepository $mediaRepository){        
     }
 
-    /**
-     * @Route("/", name="home")
-     */
     #[Route("/", name: "home")]
     public function home()
     {
         return $this->render('front/home.html.twig');
     }
 
-    /**
-     * @Route("/guests", name="guests")
-     */
     #[Route("/guests", name: "guests")]
     public function guests()
     {
@@ -39,9 +33,6 @@ class HomeController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/guest/{id}", name="guest")
-     */
     #[Route("/guest/{id}", name: "guest")]
     public function guest(int $id)
     {
@@ -51,9 +42,6 @@ class HomeController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/portfolio/{id}", name="portfolio")
-     */
     #[Route("/portfolio/{id}", name: "portfolio")]
     public function portfolio(?int $id = null)
     {
@@ -62,7 +50,7 @@ class HomeController extends AbstractController
         $user = $this->userRepository->findOneByAdmin(true);
 
         $medias = $album
-            ? $this->mediaRepository->findByAlbum($album)
+            ? $this->mediaRepository->findBy(['album' => $album])
             : $this->mediaRepository->findByUser($user);
         return $this->render('front/portfolio.html.twig', [
             'albums' => $albums,
@@ -71,9 +59,6 @@ class HomeController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/about", name="about")
-     */
     #[Route("/about", name: "about")]
     public function about()
     {

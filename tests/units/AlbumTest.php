@@ -1,6 +1,6 @@
 <?php 
 
-namespace  App\Tests\Units;
+namespace  App\tests\units;
 
 use App\Entity\Album;
 use PHPUnit\Framework\TestCase;

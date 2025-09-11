@@ -24,6 +24,21 @@ services:
       - 5432:5432
     volumes:
       - postgres_db:/var/lib/postgresql/data
+  database_test:
+    image: postgres
+    restart: always
+    container_name: postgres_P15_test
+    shm_size: 128mb
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
+      POSTGRES_DB: inazaoui_test
+    ports:
+      - 5433:5432
+    volumes:
+      - postgres_db_test:/var/lib/postgresql/data
 volumes:
   postgres_db:
+    driver: local
+  postgres_db_test:
     driver: local

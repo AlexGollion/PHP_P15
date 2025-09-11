@@ -18,9 +18,6 @@ class AlbumController extends AbstractController
     public function __construct(private AlbumRepository $albumRepository, private EntityManagerInterface $entityManager){        
     }
 
-    /**
-     * @Route("/admin/album", name="admin_album_index")
-     */
     #[Route('/admin/album', name: 'admin_album_index')]
     public function index()
     {
@@ -29,9 +26,6 @@ class AlbumController extends AbstractController
         return $this->render('admin/album/index.html.twig', ['albums' => $albums]);
     }
 
-    /**
-     * @Route("/admin/album/add", name="admin_album_add")
-     */
     #[Route('/admin/album/add', name: 'admin_album_add')]
     public function add(Request $request)
     {
@@ -48,11 +42,8 @@ class AlbumController extends AbstractController
 
         return $this->render('admin/album/add.html.twig', ['form' => $form->createView()]);
     }
-
-    /**
-     * @Route("/admin/album/update/{id}", name="admin_album_update")
-     */
-    #[Route('/admin/album/update/{id}', name: 'admin_album_update')]
+    
+    #[Route('/admin/album/update/{id}', name: 'admin_album_update', methods: [Request::METHOD_GET, Request::METHOD_POST])]
     public function update(Request $request, int $id)
     {
         $album = $this->albumRepository->find($id);
