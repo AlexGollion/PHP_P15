@@ -22,10 +22,10 @@ class MediaType extends AbstractType
                 'label' => 'Image',
                 'constraints' => [  
                     new Assert\Image([
-                    mimeTypes => ["image/jpeg", "image/png", "image/gif", "image/webp"],
-                    mimeTypesMessage => "L'image doit être au format jpeg, png, gif ou webp",
-                    maxSize => "2M",
-                    maxSizeMessage => "L'image ne doit pas dépasser 2Mo"
+                    'mimeTypes' => ["image/jpeg", "image/png", "image/gif", "image/webp"],
+                    'mimeTypesMessage' => "L'image doit être au format jpeg, png, gif ou webp",
+                    'maxSize' => "2M",
+                    'maxSizeMessage' => "L'image ne doit pas dépasser 2Mo"
                     ])
                 ]
             ])

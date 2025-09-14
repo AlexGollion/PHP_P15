@@ -10,17 +10,31 @@ use App\Entity\Album;
 use App\Entity\Media;
 use Faker\Factory;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 class TestFixtures extends Fixture implements FixtureGroupInterface
 {
-    public function __construct(UserPasswordHasherInterface $hasher)
+    private UserPasswordHasherInterface $hasher;
+    private ParameterBagInterface $params;
+
+    public function __construct(UserPasswordHasherInterface $hasher, ParameterBagInterface $params)
     {
         $this->hasher = $hasher;
+        $this->params = $params;
     }
 
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create();
+
+        $filesystem = new Filesystem();
+
+        $uploadDirectory = $this->params->get('upload_directory') ?? 'public/uploads';
+        
+        if (!$filesystem->exists($uploadDirectory)) {
+            $filesystem->mkdir($uploadDirectory);
+        }
 
         for ($i = 0; $i < 5; $i++) {
             $user = new User();
@@ -53,13 +67,26 @@ class TestFixtures extends Fixture implements FixtureGroupInterface
         for ($i = 0; $i < 10; $i++) {
             $media = new Media();
             $media->setTitle('Media ' . $i);
-            $media->setPath($faker->imageUrl());
+            $filename = $this->createTestImageFile($uploadDirectory, $faker);
+            $media->setPath($filename);
             $media->setAlbum($albums[0]);
             $media->setUser($admin);
             $manager->persist($media);
         }
 
         $manager->flush();
+    }
+
+    private function createTestImageFile(string $uploadDirectory, $faker): string
+    {
+        $extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        $filename = 'test-' . $faker->slug() . '-' . uniqid() . '.' . $faker->randomElement($extensions);
+        $filepath = $uploadDirectory . '/' . $filename;
+
+        $imageData = base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==');
+        file_put_contents($filepath, $imageData);
+        
+        return $filepath;
     }
 
     public static function getGroups(): array

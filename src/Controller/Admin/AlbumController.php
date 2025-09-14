@@ -11,11 +11,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\AlbumRepository;
+use App\Repository\MediaRepository;
 
 class AlbumController extends AbstractController
 {
 
-    public function __construct(private AlbumRepository $albumRepository, private EntityManagerInterface $entityManager){        
+    public function __construct(private AlbumRepository $albumRepository, private EntityManagerInterface $entityManager,
+    private MediaRepository $mediaRepository){
+             
     }
 
     #[Route('/admin/album', name: 'admin_album_index')]
@@ -65,8 +68,15 @@ class AlbumController extends AbstractController
     #[Route('/admin/album/delete/{id}', name: 'admin_album_delete')]
     public function delete(int $id)
     {
-        $media = $this->albumRepository->find($id);
-        $this->entityManager->remove($media);
+        $album = $this->albumRepository->find($id);
+
+        $medias = $this->mediaRepository->findBy(['album' => $album]);
+        
+        foreach ($medias as $media) {
+            $this->entityManager->remove($media);
+        }
+
+        $this->entityManager->remove($album);
         $this->entityManager->flush();
 
         return $this->redirectToRoute('admin_album_index');
