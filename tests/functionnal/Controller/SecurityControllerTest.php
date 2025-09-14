@@ -22,6 +22,22 @@ class SecurityControllerTest extends WebTestCase
         $crawler = $this->client->request(Request::METHOD_GET, $urlGenerator->generate('admin_login'));
 
         $form = $crawler->filter('form')->form();
+        $form['_username'] = 'User 1';
+        $form['_password'] = 'password';
+        $this->client->submit($form);
+
+        $authorizationChecker = $this->client->getContainer()->get(AuthorizationCheckerInterface::class);
+        $this->assertTrue($authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY'));
+    }
+
+    public function testLoginPageAdmin(): void
+    {
+        $this->client = static::createClient();
+
+        $urlGenerator = $this->client->getContainer()->get('router.default');
+        $crawler = $this->client->request(Request::METHOD_GET, $urlGenerator->generate('admin_login'));
+
+        $form = $crawler->filter('form')->form();
         $form['_username'] = 'ina';
         $form['_password'] = 'password';
         $this->client->submit($form);

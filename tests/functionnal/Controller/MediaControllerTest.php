@@ -10,16 +10,26 @@ use App\Entity\Media;
 use App\Entity\Album;
 use App\Entity\User;
 use App\Repository\MediaRepository;
-use Symfony\Component\Security\Core\User\InMemoryUser;
+use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class MediaControllerTest extends WebTestCase
 {
     private KernelBrowser $client;
     private EntityManagerInterface $entityManager;
+    private User $userLogged;
+    private UserRepository $userRepository;
 
     protected function setUp(): void
     {
         $this->client = static::createClient();
+
+        $this->entityManager = $this->client->getContainer()->get('doctrine')->getManager();
+
+        $this->userRepository = $this->client->getContainer()->get('doctrine')->getRepository(User::class);
+
+        
     }
 
     protected function tearDown(): void
@@ -29,11 +39,8 @@ class MediaControllerTest extends WebTestCase
 
     public function testMediaIndexAdmin(): void
     {
-        $user = new InMemoryUser('ina', '$2y$13$7JS0ehfU8vZhB3Q8o1sPGuoQxkiPGXRGgrAizmNfI5Sgy.Dqt9xoW', ['ROLE_ADMIN']);
-
-        $this->client->loginUser($user);
-
-        //$this->mockMediaIndexAdmin();
+        $this->userLogged = $this->userRepository->findOneBy(['name' => 'ina']);
+        $this->client->loginUser($this->userLogged);
 
         $urlGenerator = $this->client->getContainer()->get('router.default');
         $crawler = $this->client->request(Request::METHOD_GET, $urlGenerator->generate('admin_media_index'));
@@ -42,7 +49,8 @@ class MediaControllerTest extends WebTestCase
 
     public function testMediaIndex(): void
     {
-        //$this->mockMediaIndex();
+        $this->userLogged = $this->userRepository->findOneBy(['name' => 'User 0']);
+        $this->client->loginUser($this->userLogged);
 
         $urlGenerator = $this->client->getContainer()->get('router.default');
         $crawler = $this->client->request(Request::METHOD_GET, $urlGenerator->generate('admin_media_index'));
@@ -51,20 +59,44 @@ class MediaControllerTest extends WebTestCase
 
     public function testMediaAdd(): void
     {
-        $user = new InMemoryUser('ina', '$2y$13$7JS0ehfU8vZhB3Q8o1sPGuoQxkiPGXRGgrAizmNfI5Sgy.Dqt9xoW', ['ROLE_ADMIN']);
-
-        $this->client->loginUser($user);
+        $this->userLogged = $this->userRepository->findOneBy(['name' => 'ina']);
+        $this->client->loginUser($this->userLogged);
 
         $urlGenerator = $this->client->getContainer()->get('router.default');
         $crawler = $this->client->request(Request::METHOD_GET, $urlGenerator->generate('admin_media_add'));
         $this->assertResponseStatusCodeSame(200);
+
+        $testImagePath = tempnam(sys_get_temp_dir(), 'test_image_') . '.png';
+        $imageData = base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==');
+        file_put_contents($testImagePath, $imageData);
+    
+        $uploadedFile = new UploadedFile(
+            $testImagePath,
+            'test-image.png',
+            'image/png',
+            null,
+            true // Test mode
+        );
+
+        $form = $crawler->selectButton('Ajouter')->form([
+            'media[title]' => 'test',
+            'media[file]' => $uploadedFile
+        ]);
+
+        $this->client->submit($form);
+
+        if (file_exists($testImagePath)) {
+            unlink($testImagePath);
+        }
+
+        $this->assertResponseRedirects($urlGenerator->generate('admin_media_index'));
     }
+
 
     public function testMediaDelete(): void
     {
-        $user = new InMemoryUser('ina', '$2y$13$7JS0ehfU8vZhB3Q8o1sPGuoQxkiPGXRGgrAizmNfI5Sgy.Dqt9xoW', ['ROLE_ADMIN']);
-
-        $this->client->loginUser($user);
+        $this->userLogged = $this->userRepository->findOneBy(['name' => 'ina']);
+        $this->client->loginUser($this->userLogged);
 
         //$this->mockMediaIndexAdmin();
 
