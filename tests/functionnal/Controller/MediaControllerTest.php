@@ -98,79 +98,8 @@ class MediaControllerTest extends WebTestCase
         $this->userLogged = $this->userRepository->findOneBy(['name' => 'ina']);
         $this->client->loginUser($this->userLogged);
 
-        //$this->mockMediaIndexAdmin();
-
         $urlGenerator = $this->client->getContainer()->get('router.default');
         $crawler = $this->client->request(Request::METHOD_GET, $urlGenerator->generate('admin_media_delete', ['id' => 1]));
         $this->assertResponseRedirects($urlGenerator->generate('admin_media_index'));
-    }
-
-    private function mockMediaIndexAdmin(): void
-    {
-        $medias = [];
-        $album = new Album();
-        $album->setName("album");
-
-        $user = new User();
-        $user->setName("ina");
-
-        $testFilePath = sys_get_temp_dir() . '/test_media_' . uniqid() . '.jpeg';
-        file_put_contents($testFilePath, 'test content');
-
-        for($i = 0; $i < 10; $i++)
-        {
-            $media = new Media();
-            $rp = new \ReflectionProperty(Media::class, 'id');
-            $rp->setAccessible(true);
-            $rp->setValue($media, $i);
-            $media->setTitle("media $i");
-            $media->setPath($testFilePath);
-            $media->setAlbum($album);
-            $media->setUser($user);
-            $medias[] = $media;
-        }
-
-        $mockMediaRepository = $this->createMock(MediaRepository::class);
-        $mockMediaRepository->method('findBy')
-            ->with([], ['id' => 'ASC'], 25, 0)
-            ->willReturn($medias);
-
-        $mockMediaRepository->method('find')
-            ->with(1)
-            ->willReturn($medias[1]);
-
-        $container = $this->client->getContainer();
-        $container->set(MediaRepository::class, $mockMediaRepository);
-    }
-
-    private function mockMediaIndex(): void
-    {
-        $medias = [];
-        $album = new Album();
-        $album->setName("album");
-
-        $user = new User();
-        $user->setName("ina");
-
-        for($i = 0; $i < 10; $i++)
-        {
-            $media = new Media();
-            $rp = new \ReflectionProperty(Media::class, 'id');
-            $rp->setAccessible(true);
-            $rp->setValue($media, $i);
-            $media->setTitle("media $i");
-            $media->setPath('images/home.jpeg');
-            $media->setAlbum($album);
-            $media->setUser($user);
-            $medias[] = $media;
-        }
-
-        $mockMediaRepository = $this->createMock(MediaRepository::class);
-        $mockMediaRepository->method('findBy')
-            ->with(["user" => $user], ['id' => 'ASC'], 25, 0)
-            ->willReturn($medias);
-
-        $container = $this->client->getContainer();
-        $container->set(MediaRepository::class, $mockMediaRepository);
     }
 }
