@@ -7,13 +7,17 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use App\Form\UserType;
 use App\Entity\User;
 use App\Repository\UserRepository;
 
 #[IsGranted('ROLE_ADMIN')]
 final class GuestController extends AbstractController
 {
-    public function __construct(private UserRepository $userRepository){
+    public function __construct(private UserRepository $userRepository, private EntityManagerInterface $entityManager,
+    private UserPasswordHasherInterface $passwordHasher){
     }
 
     #[Route('/admin/guests', name: 'admin_guests_index')]
@@ -33,6 +37,27 @@ final class GuestController extends AbstractController
             'guests' => $guests,
             'page' => $page,
             'total' => $total
+        ]);
+    }
+
+    #[Route('/admin/guests/add', name: 'admin_guests_add')]
+    public function add(Request $request): Response
+    {
+        $guest = new User();
+        $form = $this->createForm(UserType::class, $guest);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $guest->setAdmin(false);
+            $guest->setPassword($this->passwordHasher->hashPassword($guest, $guest->getPassword()));
+            $this->entityManager->persist($guest);
+            $this->entityManager->flush();
+
+            return $this->redirectToRoute('admin_guests_index');
+        }
+
+        return $this->render('admin/guest/add.html.twig', [
+            'form' => $form->createView()
         ]);
     }
 }
