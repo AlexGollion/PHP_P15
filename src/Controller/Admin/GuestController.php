@@ -12,12 +12,13 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Form\UserType;
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Repository\MediaRepository;
 
 #[IsGranted('ROLE_ADMIN')]
 final class GuestController extends AbstractController
 {
-    public function __construct(private UserRepository $userRepository, private EntityManagerInterface $entityManager,
-    private UserPasswordHasherInterface $passwordHasher){
+    public function __construct(private UserRepository $userRepository, private MediaRepository $mediaRepository, 
+    private EntityManagerInterface $entityManager, private UserPasswordHasherInterface $passwordHasher){
     }
 
     #[Route('/admin/guests', name: 'admin_guests_index')]
@@ -59,5 +60,30 @@ final class GuestController extends AbstractController
         return $this->render('admin/guest/add.html.twig', [
             'form' => $form->createView()
         ]);
+    }
+
+    #[Route('/admin/guests/delete/{id}', name: 'admin_guests_delete')]
+    public function delete(int $id): Response
+    {
+        $guest = $this->userRepository->find($id);
+        $medias = $this->mediaRepository->findBy(['user' => $guest]);
+
+        foreach ($medias as $media) {
+            $this->entityManager->remove($media);
+        }
+        $this->entityManager->remove($guest);
+        $this->entityManager->flush();
+
+        return $this->redirectToRoute('admin_guests_index');
+    }
+
+    #[Route('/admin/guests/blocked/{id}', name: 'admin_guests_blocked')]
+    public function blocked(int $id): Response
+    {
+        $guest = $this->userRepository->find($id);
+        $guest->setBlocked(true);
+        $this->entityManager->flush();
+
+        return $this->redirectToRoute('admin_guests_index');
     }
 }

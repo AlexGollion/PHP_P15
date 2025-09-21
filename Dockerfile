@@ -22,3 +22,7 @@ RUN mv /root/.symfony5/bin/symfony /usr/local/bin
 
 RUN git config --global user.email "alex.gollion@gmail.com" 
 RUN git config --global user.name "Alex Gollion"
+
+RUN mkdir -p /var/www/public/uploads && \
+    chown -R www-data:www-data /var/www/public && \
+    chmod -R 755 /var/www/public

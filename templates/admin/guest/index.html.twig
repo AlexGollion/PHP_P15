@@ -21,8 +21,8 @@
                     <td>{{ guest.email }}</td>
                     <td>{{ guest.description }}</td>
                     <td>
-                        <a href="{{ path('admin_media_delete', {id: guest.id}) }}" class="btn btn-danger">Bloquer</a>
-                        <a href="{{ path('admin_media_delete', {id: guest.id}) }}" class="btn btn-danger">Supprimer</a>
+                        <a href="{{ path('admin_guests_blocked', {id: guest.id}) }}" class="btn btn-danger">Bloquer</a>
+                        <a href="{{ path('admin_guests_delete', {id: guest.id}) }}" class="btn btn-danger">Supprimer</a>
                     </td>
                 </tr>
             {% endfor %}

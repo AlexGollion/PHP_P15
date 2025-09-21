@@ -39,6 +39,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string')]
     private ?string $password = null;
 
+    #[ORM\Column]
+    private ?bool $blocked = false;
+
     public function __construct()
     {
         $this->medias = new ArrayCollection();
@@ -143,5 +146,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAdmin(bool $admin): void
     {
         $this->admin = $admin;
+    }
+
+    public function isBlocked(): ?bool
+    {
+        return $this->blocked;
+    }
+
+    public function setBlocked(?bool $blocked): static
+    {
+        $this->blocked = $blocked;
+
+        return $this;
     }
 }
