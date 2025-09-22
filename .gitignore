@@ -20,4 +20,8 @@
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
 
+###> Test coverage ###
+/public/test-coverage/
+###< Test coverage ###
+
 /.vscode
