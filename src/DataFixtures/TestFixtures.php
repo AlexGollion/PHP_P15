@@ -74,6 +74,13 @@ class TestFixtures extends Fixture implements FixtureGroupInterface
             $manager->persist($media);
         }
 
+        $media = new Media();
+        $media->setTitle('Media 11');
+        $filename = $this->createTestImageFile($uploadDirectory, $faker);
+        $media->setPath($filename);
+        $media->setUser($user);
+        $manager->persist($media);
+
         $manager->flush();
     }
 

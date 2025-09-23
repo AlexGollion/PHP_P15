@@ -28,3 +28,15 @@ Commande pour executer les tests
 ```bash
 vendor/bin/phpunit
 ```
+
+Commande pour executer un test spécifique
+
+```bash
+vendor/bin/phpunit --filter=nomDuTest
+```
+
+Commande pour avoir le test-coverage
+
+```bash
+vendor/bin/phpunit --coverage-html public/test-coverage
+```
