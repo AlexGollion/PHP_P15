@@ -25,3 +25,5 @@
 ###< Test coverage ###
 
 /.vscode
+
+newrelic.ini
