@@ -9,6 +9,7 @@ use App\Entity\User;
 use App\Entity\Album;
 use App\Entity\Media;
 use Faker\Factory;
+use Faker\Generator;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -84,7 +85,7 @@ class TestFixtures extends Fixture implements FixtureGroupInterface
         $manager->flush();
     }
 
-    private function createTestImageFile(string $uploadDirectory, $faker): string
+    private function createTestImageFile(string $uploadDirectory, Generator $faker): string
     {
         $extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
         $filename = 'test-' . $faker->slug() . '-' . uniqid() . '.' . $faker->randomElement($extensions);

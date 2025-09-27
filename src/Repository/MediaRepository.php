@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Media;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -10,9 +11,9 @@ use Doctrine\Persistence\ManagerRegistry;
  * @extends ServiceEntityRepository<Media>
  *
  * @method Media|null find($id, $lockMode = null, $lockVersion = null)
- * @method Media|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Media|null findOneBy(array<string, mixed> $criteria, array<string, mixed> $orderBy = null)
  * @method Media[]    findAll()
- * @method Media[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Media[]    findBy(array<string, mixed> $criteria, array<string, mixed> $orderBy = null, $limit = null, $offset = null)
  */
 class MediaRepository extends ServiceEntityRepository
 {
@@ -46,7 +47,10 @@ class MediaRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-    public function findByUserPaginated($user, int $page = 1, int $limit = 25): array
+    /**
+     * @return array<mixed>
+     */
+    public function findByUserPaginated(User $user, int $page = 1, int $limit = 25): array
     {
         $offset = ($page - 1) * $limit;
 

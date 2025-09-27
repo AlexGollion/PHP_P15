@@ -62,7 +62,7 @@ class AppFixtures extends Fixture implements FixtureGroupInterface
                 $media->setPath('uploads/00' . $i . '.jpg');
             }
 
-            $albumId = floor(($i - 1) / 10);
+            $albumId = (int) floor(($i - 1) / 10);
             $media->setAlbum($albums[$albumId]);
             $media->setUser($admin);
             $manager->persist($media);
@@ -78,7 +78,7 @@ class AppFixtures extends Fixture implements FixtureGroupInterface
             } else {
                 $media->setPath('uploads/' . $i . '.jpg');
             }
-            $userId = floor(($i - 51) / 50);
+            $userId = (int) floor(($i - 51) / 50);
             $media->setUser($users[$userId]);
             $manager->persist($media);
         }

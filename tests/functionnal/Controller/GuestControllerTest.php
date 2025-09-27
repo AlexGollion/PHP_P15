@@ -11,20 +11,16 @@ use App\Entity\Album;
 use App\Entity\User;
 use App\Repository\MediaRepository;
 use App\Repository\UserRepository;
-use Doctrine\ORM\EntityManagerInterface;
 
 class GuestControllerTest extends WebTestCase
 {
     private KernelBrowser $client;
-    private EntityManagerInterface $entityManager;
     private User $userLogged;
     private UserRepository $userRepository;
 
     protected function setUp(): void
     {
         $this->client = static::createClient();
-
-        $this->entityManager = $this->client->getContainer()->get('doctrine')->getManager();
 
         $this->userRepository = $this->client->getContainer()->get('doctrine')->getRepository(User::class);
 

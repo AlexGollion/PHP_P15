@@ -22,13 +22,13 @@ class HomeController extends AbstractController
     }
 
     #[Route("/", name: "home")]
-    public function home()
+    public function home(): Response
     {
         return $this->render('front/home.html.twig');
     }
 
     #[Route("/guests", name: "guests")]
-    public function guests(Request $request)
+    public function guests(Request $request): Response
     {
         $page = $request->query->getInt('page', 1);
 
@@ -48,7 +48,7 @@ class HomeController extends AbstractController
     }
 
     #[Route("/guest/{id}", name: "guest")]
-    public function guest(Request $request, int $id)
+    public function guest(Request $request, int $id): Response
     {
 
         $guest = $this->userRepository->find($id);
@@ -73,18 +73,18 @@ class HomeController extends AbstractController
     }
 
     #[Route("/portfolio/{id}", name: "portfolio")]
-    public function portfolio(Request $request, ?int $id = null)
+    public function portfolio(Request $request, ?int $id = null): Response
     {
         $albums = $this->albumRepository->findAll();
         $album = $id ? $this->albumRepository->find($id) : null;
-        $user = $this->userRepository->findOneByAdmin(true);
+        $user = $this->userRepository->findBy(['admin' => true]);
 
         $page = max(1, $request->query->getInt('page', 1)); 
         $limit = 25;
 
         $medias = $album
             ? $this->mediaRepository->findBy(['album' => $album])
-            : $this->mediaRepository->findByUserPaginated($user, $page, $limit);
+            : $this->mediaRepository->findByUserPaginated($user[0], $page, $limit);
 
         if (isset($medias['total'])) {
             $total = (int) ceil($medias['total'] / $limit);
@@ -107,18 +107,8 @@ class HomeController extends AbstractController
     }
 
     #[Route("/about", name: "about")]
-    public function about()
+    public function about(): Response
     {
         return $this->render('front/about.html.twig');
-    }
-
-    #[Route('/test')]
-    public function test(): Response
-    {
-        if (extension_loaded('newrelic')) {
-            newrelic_name_transaction('/test');
-            newrelic_add_custom_parameter('test', 1);
-        }
-        return new Response('OK');
     }
 }

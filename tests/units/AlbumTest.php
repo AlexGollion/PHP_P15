@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class AlbumTest extends TestCase
 {
-    public function testAlbum()
+    public function testAlbum(): void
     {
         $dataAlbum = [
             'name' => 'test'

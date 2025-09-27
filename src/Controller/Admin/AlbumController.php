@@ -9,6 +9,7 @@ use App\Form\MediaType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\AlbumRepository;
 use App\Repository\MediaRepository;
@@ -22,7 +23,7 @@ class AlbumController extends AbstractController
     }
 
     #[Route('/admin/album', name: 'admin_album_index')]
-    public function index()
+    public function index(): Response
     {
         $albums = $this->albumRepository->findAll();
 
@@ -30,7 +31,7 @@ class AlbumController extends AbstractController
     }
 
     #[Route('/admin/album/add', name: 'admin_album_add')]
-    public function add(Request $request)
+    public function add(Request $request): Response
     {
         $album = new Album();
         $form = $this->createForm(AlbumType::class, $album);
@@ -47,7 +48,7 @@ class AlbumController extends AbstractController
     }
     
     #[Route('/admin/album/update/{id}', name: 'admin_album_update', methods: [Request::METHOD_GET, Request::METHOD_POST])]
-    public function update(Request $request, int $id)
+    public function update(Request $request, int $id): Response
     {
         $album = $this->albumRepository->find($id);
         $form = $this->createForm(AlbumType::class, $album);
@@ -62,11 +63,8 @@ class AlbumController extends AbstractController
         return $this->render('admin/album/update.html.twig', ['form' => $form->createView()]);
     }
 
-    /**
-     * @Route("/admin/album/delete/{id}", name="admin_album_delete")
-     */
     #[Route('/admin/album/delete/{id}', name: 'admin_album_delete')]
-    public function delete(int $id)
+    public function delete(int $id): Response
     {
         $album = $this->albumRepository->find($id);
 
