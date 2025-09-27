@@ -1,35 +1,85 @@
 # Ina Zaoui
 
-Pour se connecter avec le compte de Ina, il faut utiliser les identifiants suivants:
+## Pré-requis
 
-- identifiant : `ina`
-- mot de passe : `password`
+Installer docker desktop: https://www.docker.com/
 
-Vous trouverez dans le fichier `backup.zip` un dump SQL anonymisé de la base de données et toutes les images qui se trouvaient dans le dossier `public/uploads`.
-Faudrait peut être trouver une meilleure solution car le fichier est très gros, il fait plus de 1Go.
-
-Lancer docker desktop puis taper cette commande pour démarrer l'environnement docker
+Récupérer le projet
 
 ```bash
-docker-compose up
+git clone https://github.com/AlexGollion/PHP_P15.git
+cd PHP_P15
+```
+
+Créer un fichier newrelic.ini (en copiant newrelic.ini.example) et modifiant la clé par la votre que vous pouvez trouver ici https://newrelic.com/fr
+
+## Installation
+
+Lancer docker desktop puis taper cette commande pour créer et démarrer l'environnement docker
+
+```bash
+docker-compose up --build -d
 ```
 
 Le projet se lance à l'adresse: 127.0.0.1:8080
-La base de données se lance l'adresse: 127.0.0.1:8899
 
-Executer cette commande pour pouvoir utiliser les commandes de symfony et composer dans l'environnement docker
+Exécuter cette commande pour pouvoir exécuter des commandes dans le container php
 
 ```bash
 docker-compose exec php /bin/bash
 ```
 
-Commande pour executer les tests
+Ensuite exécuter ces commandes dans le container php afin de créer la base de donnée et générer les fixtures
+
+```bash
+bin/console doctrine:database:drop -f --if-exists
+bin/console doctrine:database:create
+bin/console doctrine:migrations:migrate
+bin/console doctrine:fixtures:load --group=dev
+```
+
+## Utilisation
+
+Pour se connecter avec le compte de Ina, il faut utiliser les identifiants suivants:
+
+- identifiant : `Ina Zaoui`
+- mot de passe : `password`
+
+### Docker
+
+Pour lancer l'environnement docker
+
+```bash
+docker-compose up -d
+```
+
+Pour arrêter l'environnement docker
+
+```bash
+docker-compose down
+```
+
+Exécuter cette commande pour pouvoir exécuter des commandes dans le container php
+
+```bash
+docker-compose exec php /bin/bash
+```
+
+## Tests
+
+Avant de commencer les tests, dans le container php, charger les fixtures de test
+
+```bash
+bin/console doctrine:fixtures:load --env=test --group=test
+```
+
+Commande pour exécuter les tests
 
 ```bash
 vendor/bin/phpunit
 ```
 
-Commande pour executer un test spécifique
+Commande pour exécuter un test spécifique
 
 ```bash
 vendor/bin/phpunit --filter=nomDuTest
