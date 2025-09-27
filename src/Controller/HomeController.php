@@ -10,6 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\UserRepository;
 use App\Repository\AlbumRepository;
 use App\Repository\MediaRepository;
+use Symfony\Component\HttpFoundation\Response;
 
 class HomeController extends AbstractController
 {
@@ -68,5 +69,15 @@ class HomeController extends AbstractController
     public function about()
     {
         return $this->render('front/about.html.twig');
+    }
+
+    #[Route('/test')]
+    public function test(): Response
+    {
+        if (extension_loaded('newrelic')) {
+            newrelic_name_transaction('/test');
+            newrelic_add_custom_parameter('test', 1);
+        }
+        return new Response('OK');
     }
 }

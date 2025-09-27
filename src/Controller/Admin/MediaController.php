@@ -62,10 +62,6 @@ class MediaController extends AbstractController
             $filename = md5(uniqid()) . '.' . $media->getFile()->guessExtension();
             $media->setPath('uploads/' . $filename);
 
-            //dd($this->getParameter('kernel.project_dir'), $this->getParameter('upload_directory'));
-
-            //$uploadDir = $this->getParameter('upload_directory');
-
             $media->getFile()->move('uploads', $filename);
             $this->entityManager->persist($media);
             $this->entityManager->flush();

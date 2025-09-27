@@ -55,7 +55,14 @@ class AppFixtures extends Fixture implements FixtureGroupInterface
         for ($i = 1; $i < 51; $i++) {
             $media = new Media();
             $media->setTitle('Titre ' . $i);
-            $media->setPath('uploads/00' . $i . '.jpg');
+            if ($i < 10) {
+                
+                $media->setPath('uploads/000' . $i . '.jpg');
+            }
+            else {
+                $media->setPath('uploads/00' . $i . '.jpg');
+            }
+
             $albumId = floor(($i - 1) / 10);
             $media->setAlbum($albums[$albumId]);
             $media->setUser($admin);

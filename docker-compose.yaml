@@ -8,6 +8,8 @@ services:
     volumes:
       - ./Default.conf:/etc/apache2/sites-enabled/000-default.conf:ro
       - ./php.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+      - ./newrelic.ini:/usr/local/etc/php/conf.d/newrelic.ini:ro
+      - ./var/log/newrelic:/var/log/newrelic
       - ./:/var/www
     depends_on:
       - database
