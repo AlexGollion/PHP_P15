@@ -11,6 +11,10 @@ git clone https://github.com/AlexGollion/PHP_P15.git
 cd PHP_P15
 ```
 
+Télécharger les fichiers de backup: https://s3.eu-west-1.amazonaws.com/course.oc-static.com/projects/876_DA_PHP_Sf_V2/P15/backup.zip
+Extraire le contenu du fichier téléchargé.
+Copier les images présentes dans public/uploads dans les dossier public/uploads du projet
+
 Créer un fichier newrelic.ini (en copiant newrelic.ini.example) et modifiant la clé par la votre que vous pouvez trouver ici https://newrelic.com/fr
 
 ## Installation
@@ -89,4 +93,12 @@ Commande pour avoir le test-coverage
 
 ```bash
 vendor/bin/phpunit --coverage-html public/test-coverage
+```
+
+## PHPStan
+
+Pour exécuter l'analyse de PHPStan
+
+```bash
+vendor/bin/phpstan --memory-limit=1G
 ```
