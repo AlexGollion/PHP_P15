@@ -10,7 +10,7 @@
             <tr>
                 <th>Nom</th>
                 <th>Email</th>
-                <th>Description</th>
+                <th>Statut</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -19,9 +19,19 @@
                 <tr>
                     <td>{{ guest.name }}</td>
                     <td>{{ guest.email }}</td>
-                    <td>{{ guest.description }}</td>
                     <td>
-                        <a href="{{ path('admin_guests_blocked', {id: guest.id}) }}" class="btn btn-danger">Bloquer</a>
+                        {% if guest.blocked %}
+                        Bloqué
+                        {% else %}
+                        Actif
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if guest.blocked %}
+                            <a href="{{ path('admin_guests_blocked', {id: guest.id}) }}" class="btn btn-danger">Débloquer</a>
+                        {% else %}
+                            <a href="{{ path('admin_guests_blocked', {id: guest.id}) }}" class="btn btn-danger">Bloquer</a>
+                        {% endif %}
                         <a href="{{ path('admin_guests_delete', {id: guest.id}) }}" class="btn btn-danger">Supprimer</a>
                     </td>
                 </tr>

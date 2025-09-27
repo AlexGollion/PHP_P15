@@ -20,7 +20,8 @@ class UserType extends AbstractType
                 'required' => true
             ])
             ->add('description', TextType::class, [
-                'label' => 'Description'
+                'label' => 'Description',
+                'required' => false
             ])
             ->add('email', EmailType::class, [
                 'label' => 'Email',

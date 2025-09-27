@@ -81,9 +81,17 @@ final class GuestController extends AbstractController
     public function blocked(int $id): Response
     {
         $guest = $this->userRepository->find($id);
-        $guest->setBlocked(true);
-        $this->entityManager->flush();
 
-        return $this->redirectToRoute('admin_guests_index');
+        if ($guest->isBlocked()) {
+            $guest->setBlocked(false);
+            $this->entityManager->flush();
+            return $this->redirectToRoute('admin_guests_index');
+        } else {
+            $guest->setBlocked(true);
+            $this->entityManager->flush();
+            return $this->redirectToRoute('admin_guests_index');        
+        }
+
+        
     }
 }
