@@ -45,4 +45,26 @@ class MediaRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function findByUserPaginated($user, int $page = 1, int $limit = 25): array
+    {
+        $offset = ($page - 1) * $limit;
+
+        $qb = $this->createQueryBuilder('m')
+            ->andWhere('m.user = :user')
+            ->setParameter('user', $user)
+            ->orderBy('m.id', 'ASC')
+            ->setFirstResult($offset)
+            ->setMaxResults($limit);
+
+        $medias = $qb->getQuery()->getResult();
+
+        $total =  $this->count(['user' => $user]);
+
+        return 
+        [
+            'medias' => $medias,
+            'total' => $total
+        ];
+    }
 }

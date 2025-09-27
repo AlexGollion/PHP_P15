@@ -1,0 +1,6 @@
+[newrelic]
+extension=newrelic.so
+newrelic.appname=Symfony P15
+newrelic.license=Votre_Clé_de_License
+newrelic.loglevel=info
+newrelic.daemon.logfile=/var/log/newrelic/newrelic-daemon.log

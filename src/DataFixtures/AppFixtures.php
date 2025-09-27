@@ -56,9 +56,8 @@ class AppFixtures extends Fixture implements FixtureGroupInterface
             $media = new Media();
             $media->setTitle('Titre ' . $i);
             if ($i < 10) {
-                
                 $media->setPath('uploads/000' . $i . '.jpg');
-            }
+            } 
             else {
                 $media->setPath('uploads/00' . $i . '.jpg');
             }
@@ -72,7 +71,13 @@ class AppFixtures extends Fixture implements FixtureGroupInterface
         for ($i = 51; $i <= 2500; $i++) {
             $media = new Media();
             $media->setTitle('Titre ' . $i);
-            $media->setPath('uploads/00' . $i . '.jpg');
+            if ($i < 100) {
+                $media->setPath('uploads/00' . $i . '.jpg');
+            } else if ($i < 1000) {
+                $media->setPath('uploads/0' . $i . '.jpg');
+            } else {
+                $media->setPath('uploads/' . $i . '.jpg');
+            }
             $userId = floor(($i - 51) / 50);
             $media->setUser($users[$userId]);
             $manager->persist($media);
